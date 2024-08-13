@@ -1,13 +1,51 @@
 import socketserver
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes
+from cryptography.fernet import Fernet
+
 
 class ClientHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         encrypted_key = self.request.recv(1024).strip()
         print("implemt decreption of data" + encrypted_key )
-        #---------------------------------
-        #     Decryption Code Here
-        #---------------------------------
+         Step 1: Load the private key
+        with open("/path/to/private_key.pem", "rb") as key_file:
+        private_key = serialization.load_pem_private_key(
+            key_file.read(),
+            password=None,  # Use a password if the private key is encrypted
+            backend=default_backend()
+        )
+
+    # Step 2: Load the encrypted symmetric key
+    with open("/path/to/encryptedSymmetricKey.key", "rb") as key_file:
+        encrypted_symmetric_key = key_file.read()
+
+    # Step 3: Decrypt the symmetric key using the private key
+    symmetric_key = private_key.decrypt(
+        encrypted_symmetric_key,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+
+    # Step 4: Load the encrypted file data
+    with open("/path/to/encrypted_file.txt", "rb") as file:
+        encrypted_data = file.read()
+
+    # Step 5: Decrypt the file data using the symmetric key
+    fernet_instance = Fernet(symmetric_key)
+    decrypted_data = fernet_instance.decrypt(encrypted_data)
+
+    # Step 6: Write the decrypted data back to a file
+    with open("/path/to/decrypted_file.txt", "wb") as file:
+        file.write(decrypted_data)
+
+    print("File decrypted successfully.")
         self.request.sendall("send key back")
 
 if __name__ == "__main__":
