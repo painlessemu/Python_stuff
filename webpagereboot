@@ -1,38 +1,67 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# List of URLs to test
+#list of urls
 urls = [
     "http://192.168.0.23/#login",
     "http://192.168.0.24/#login",
     "http://192.168.0.25/#login",
     "http://192.168.0.26/#login",
-    "http://192.168.0.27/#login"
+    "http://192.168.0.27/#login",
+    "http://192.168.0.28/#login"
 ]
 
-# Function to perform the test actions
-def perform_test(driver, url):
-    driver.get(url)  # Open the URL
-    driver.set_window_size(945, 728)  # Set the window size
-    
-    # Perform actions
-    driver.find_element(By.ID, 'content').click()
-    driver.find_element(By.ID, 'txtUserName').click()
-    driver.find_element(By.ID, 'txtUserName').send_keys("Username")
-    driver.find_element(By.ID, 'txtPassword').click()
-    driver.find_element(By.ID, 'txtPassword').send_keys("Password")
-    driver.find_element(By.ID, 'btnLogin').click()
-    driver.find_element(By.ID, 'mu_cfgHome').click()
-    driver.find_element(By.LINK_TEXT, 'View Log').click()
-    driver.find_element(By.LINK_TEXT, 'Reboot').click()
-    driver.find_element(By.ID, 'btnReboot').click()
-    driver.find_element(By.ID, 'btnY0').click()
 
-# Main execution
+def rebootDvr(driver, url):
+    #open the URL
+    driver.get(url)
+
+
+    #click on the element with id 'txtUserName
+    usernameElement = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "txtUserName")))
+    usernameElement.click()
+
+    usernameElement.send_keys("Username")
+
+
+    ##click on the element txtPassword
+    passwordElement = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "txtPassword")))
+    passwordElement.click()
+
+    #put password into element
+    passwordElement.send_keys("Password")
+
+    #click on the element btnlogin
+    loginButton = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, 'btnLogin')))
+    loginButton.click()
+
+    #click on element mu_cfgHome
+    functionPanelLink = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, 'mu_cfgHome')))
+    functionPanelLink.click()
+
+    viewLogLink = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.LINK_TEXT, 'View Log')))
+    viewLogLink.click()
+
+    rebootLink = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.LINK_TEXT, 'Reboot')))
+    rebootLink.click()
+
+    rebootButton = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, 'btnReboot')))
+    rebootButton.click()
+
+    rebootAccept = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "btnY0")))
+    rebootAccept.click()
+
+    
+
 for url in urls:
-    driver = webdriver.Chrome()  # Initialize the WebDriver
+    driver = webdriver.Chrome()
     try:
-        perform_test(driver, url)  # Perform the test actions
+        rebootDvr(driver, url)
+    except Exception as e:
+        print(f"An error occurred for IP {url}: {e}")
     finally:
-        driver.quit()  # Close the browser
+        driver.quit()
+
