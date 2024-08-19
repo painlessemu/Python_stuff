@@ -1,43 +1,38 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 
-driver = webdriver.Chrome()
+# List of URLs to test
+urls = [
+    "http://192.168.0.23/#login",
+    "http://192.168.0.24/#login",
+    "http://192.168.0.25/#login",
+    "http://192.168.0.26/#login",
+    "http://192.168.0.27/#login"
+]
 
-#open the URL
-driver.get("http://IP_ADDRESS/#login")
+# Function to perform the test actions
+def perform_test(driver, url):
+    driver.get(url)  # Open the URL
+    driver.set_window_size(945, 728)  # Set the window size
+    
+    # Perform actions
+    driver.find_element(By.ID, 'content').click()
+    driver.find_element(By.ID, 'txtUserName').click()
+    driver.find_element(By.ID, 'txtUserName').send_keys("Username")
+    driver.find_element(By.ID, 'txtPassword').click()
+    driver.find_element(By.ID, 'txtPassword').send_keys("Password")
+    driver.find_element(By.ID, 'btnLogin').click()
+    driver.find_element(By.ID, 'mu_cfgHome').click()
+    driver.find_element(By.LINK_TEXT, 'View Log').click()
+    driver.find_element(By.LINK_TEXT, 'Reboot').click()
+    driver.find_element(By.ID, 'btnReboot').click()
+    driver.find_element(By.ID, 'btnY0').click()
 
-#Click on the element with id 'content'
-contentElement = driver.find_element(By.ID, 'Content')
-contentElement.click()
-
-#click on the element with id 'txtUserName
-usernameElement = driver.find_element(By.ID, 'txtUserName')
-usernameElement.click()
-
-##click on the element txtPassword
-passwordElement = driver.find_element(By.ID, 'textPassword')
-passwordElement.click()
-
-#put password into element
-passwordElement.send_keys("password")
-
-#click on the element btnlogin
-loginButton = driver.find_element(By.ID, 'btnLogin')
-loginButton.click()
-
-#click on element mu_cfgHome
-functionPanelLink = driver.find_element(By.ID, 'mu_cfgHome')
-functionPanelLink.click()
-
-viewLogLink = driver.find_element(By.LINK_TEXT, 'View Log')
-viewLogLink.click()
-
-rebootLink = driver.find_element(By.LINK_TEXT, 'Reboot')
-rebootLink.click()
-
-rebootButton = driver.find_element(By.ID, 'btnReboot')
-
-driver.quit()
+# Main execution
+for url in urls:
+    driver = webdriver.Chrome()  # Initialize the WebDriver
+    try:
+        perform_test(driver, url)  # Perform the test actions
+    finally:
+        driver.quit()  # Close the browser
