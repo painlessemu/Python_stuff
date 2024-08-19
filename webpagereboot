@@ -1,0 +1,43 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome()
+
+#open the URL
+driver.get("http://IP_ADDRESS/#login")
+
+#Click on the element with id 'content'
+contentElement = driver.find_element(By.ID, 'Content')
+contentElement.click()
+
+#click on the element with id 'txtUserName
+usernameElement = driver.find_element(By.ID, 'txtUserName')
+usernameElement.click()
+
+##click on the element txtPassword
+passwordElement = driver.find_element(By.ID, 'textPassword')
+passwordElement.click()
+
+#put password into element
+passwordElement.send_keys("password")
+
+#click on the element btnlogin
+loginButton = driver.find_element(By.ID, 'btnLogin')
+loginButton.click()
+
+#click on element mu_cfgHome
+functionPanelLink = driver.find_element(By.ID, 'mu_cfgHome')
+functionPanelLink.click()
+
+viewLogLink = driver.find_element(By.LINK_TEXT, 'View Log')
+viewLogLink.click()
+
+rebootLink = driver.find_element(By.LINK_TEXT, 'Reboot')
+rebootLink.click()
+
+rebootButton = driver.find_element(By.ID, 'btnReboot')
+
+driver.quit()
