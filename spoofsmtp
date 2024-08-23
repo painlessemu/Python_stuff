@@ -2,7 +2,8 @@ import sys, socket
 size = 1024
 
 def sendMessage(smtpServer, port, fromAddress,toAddress,message):
-    IP = smtpServerPORT = int(port)
+    IP = smtpServer
+    PORT = int(port)
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #Open socket on port
